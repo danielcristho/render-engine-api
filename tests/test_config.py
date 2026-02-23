@@ -110,7 +110,7 @@ editor="nvim"
 
     def test_editor_none_when_not_set(self, monkeypatch):
         """Returns None when editor is not in config or environment."""
-        monkeypatch.delenv("EDITOR")
+        monkeypatch.delenv("EDITOR", raising=False)
         config = ApiConfig()
         assert config.editor is None
 
