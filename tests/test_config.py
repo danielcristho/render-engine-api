@@ -70,13 +70,17 @@ class TestAPIConfigLoadConfig:
         assert config.collection is None
         # Editor pulls from editor by default
 
-    def test_invalid_toml_prints_error_and_returns_none(self, tmp_path):
+    def test_invalid_toml_prints_error_and_returns_none(self, tmp_path, capsys):
         """Returns None for all properties when the config file contains invalid TOML."""
         config_file = _write_config(tmp_path, "not valid toml [[[")
         config = ApiConfig(config_file=config_file)
+        # Accessing properties should trigger config loading and TOML error handling.
         assert config.module is None
         assert config.site is None
         assert config.collection is None
+        captured = capsys.readouterr()
+        # Ensure that an error message was written to stderr.
+        assert captured.err
 
     def test_config_file_not_ran_if_self_config_loaded_equals_true(self, tmp_path):
         config_file = _write_config(
