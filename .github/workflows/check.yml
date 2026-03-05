@@ -1,13 +1,13 @@
 name: Pre-Commit
+
 on:
   workflow_call:
   workflow_dispatch:
   push:
-    branches:
-      - main
+    branches: [main]
   pull_request:
-    branches:
-      - main
+    branches: [main]
+
 permissions:
   contents: write
   pull-requests: write
@@ -17,11 +17,19 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v6.0.1
-      - uses: actions/setup-python@v5
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
         with:
           python-version: "3.13"
-      # install uv
-      - uses: astral-sh/setup-uv@v7
-      # run pre-commit
-      - uses: pre-commit/action@v3.0.0
+
+      - name: Add uv
+        uses: astral-sh/setup-uv@v3
+
+      - name: Install dependencies
+        run: uv sync --dev
+
+      - name: Run pre-commit
+        uses: pre-commit/action@v3.0.0
